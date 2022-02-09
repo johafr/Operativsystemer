@@ -22,25 +22,24 @@ char* menu() {
 }
 
 int main(){
-  char Schedule = 's';
   char action; 
   
-  while (action != 'x')
-  {
-  printf(menu());
-  scanf(" %c", &action); 
+  while (action != 'x') {
+    printf(menu());
+    scanf(" %c", &action); 
 
-  }
-  if (&action == Schedule) {
-    printf("your input = %c \n you can schedule an alarm", action);
-  } 
-  else if (action == 'l') {
-    printf("your input = %c \n you can display alarms" , action);
-  }
-  else if (action == 'c') {
-    printf("your input = %c \n you can cancel alarms" , action);
-  } else {
-    printf("wrong bitch");
+    
+    if (action == 's') {
+      printf("your input = %c \nyou can schedule an alarm \n", action);
+    } else if (action == 'l') {
+      printf("your input = %c \nyou can display alarms \n" , action);
+    } else if (action == 'c') {
+      printf("your input = %c \nyou can cancel alarms \n" , action);
+    } else {
+      if (action != 'x') {
+      printf("wrong bitch \n");
+      }
+    }
   }
   
   
