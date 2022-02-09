@@ -3,27 +3,20 @@
 #include<stdlib.h>
 #include<time.h>
 
-typedef struct alarm {
+struct alarm {
   int alarmId;
   int PID; //Stod at vi kunne trenge det i oppgaven
-  struct alarm *next;
-}alarm;
+};
 
-alarm *createAlarm(int alarmId) {
-  alarm *newAlarm = malloc(sizeof(alarm));
-  newAlarm -> alarmId = alarmId;
-  newAlarm -> next = NULL;
-  return newAlarm;
-}
+struct alarm alarms[10];
 
 int main(){
-  char action = 's'; 
+  char action; 
   char* menu =  "Welcome to the alarm clock! It is currently 'insert time'. Please enter 's' (schedule), 'l' (list), 'c' (cancel), 'x' (exit) \n";
   printf(" %s \n", menu);
  
   while (action != 'x') {
-  scanf(" %c", &action); 
-   printf(" %c", action);
+    scanf(" %c", &action); 
     
     if (action == 's') {
       printf("your input = %c \nyou can schedule an alarm \n", action);
