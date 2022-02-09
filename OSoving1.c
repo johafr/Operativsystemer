@@ -3,12 +3,21 @@
 #include<stdlib.h>
 #include<time.h>
 
+//variables
+
+
+//structs
 struct alarm {
   int alarmId;
   int PID; //Stod at vi kunne trenge det i oppgaven
 };
 
 struct alarm alarms[10];
+
+//methods
+void actionL() {
+  
+}
 
 int main(){
   char action; 
