@@ -7,8 +7,9 @@ struct alarm {
   int alarmId;
   int PID; //Stod at vi kunne trenge det i oppgaven
 };
-
 struct alarm alarms[10];
+
+
 
 int main(){
   char action; 
@@ -16,10 +17,12 @@ int main(){
   printf(" %s \n", menu);
  
   while (action != 'x') {
-    scanf(" %c", &action); 
+  scanf(" %c", &action); 
+   printf(" %c", action);
     
     if (action == 's') {
-      printf("your input = %c \nyou can schedule an alarm \n", action);
+      printf("Your input = %c \nYou can schedule an alarm \n", action);
+      printf("What time do you want the alarm?");
     } else if (action == 'l') {
       printf("your input = %c \nyou can display alarms \n" , action);
     } else if (action == 'c') {
