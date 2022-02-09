@@ -1,5 +1,6 @@
 //Unix based alarm clock
 #include<stdio.h>
+#include<stdlib.h>
 #include<time.h>
 
 typedef struct alarm {
