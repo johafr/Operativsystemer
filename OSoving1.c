@@ -2,7 +2,6 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<time.h>
-#include<string.h>
 
 typedef struct alarm {
   int alarmId;
@@ -17,17 +16,18 @@ alarm *createAlarm(int alarmId) {
   return newAlarm;
 }
 
-char* menu() {
-  return "Welcome to the alarm clock! It is currently 'insert time'. Please enter 's' (schedule), 'l' (list), 'c' (cancel), 'x' (exit) \n";
-}
+// char* menu() {
+ // return "Welcome to the alarm clock! It is currently 'insert time'. Please enter 's' (schedule), 'l' (list), 'c' (cancel), 'x' (exit) \n";
+//}
 
 int main(){
-  char action; 
-  
+  char action = 's'; 
+  char* menu =  "Welcome to the alarm clock! It is currently 'insert time'. Please enter 's' (schedule), 'l' (list), 'c' (cancel), 'x' (exit) \n";
+  printf(" %s \n", menu);
+ 
   while (action != 'x') {
-    printf(menu());
-    scanf(" %c", &action); 
-
+  scanf(" %c", &action); 
+   printf(" %c", action);
     
     if (action == 's') {
       printf("your input = %c \nyou can schedule an alarm \n", action);
@@ -38,9 +38,9 @@ int main(){
     } else {
       if (action != 'x') {
       printf("wrong bitch \n");
-      }
-    }
-  }
+       }
+     }
+   }
   
   
   printf("Compiled");
