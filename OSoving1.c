@@ -16,10 +16,6 @@ alarm *createAlarm(int alarmId) {
   return newAlarm;
 }
 
-// char* menu() {
- // return "Welcome to the alarm clock! It is currently 'insert time'. Please enter 's' (schedule), 'l' (list), 'c' (cancel), 'x' (exit) \n";
-//}
-
 int main(){
   char action = 's'; 
   char* menu =  "Welcome to the alarm clock! It is currently 'insert time'. Please enter 's' (schedule), 'l' (list), 'c' (cancel), 'x' (exit) \n";
