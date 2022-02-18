@@ -21,6 +21,40 @@ struct alarm alarms[10];
 //methods
 void actionS() {
 
+  int year;
+  int month;
+  int day;
+  int hour;
+  int minute;
+  int second;
+  char time[0];
+
+  printf ("Enter year: "); scanf ("%d",&year);
+  printf ("Enter month: "); scanf ("%d",&month);
+  printf ("Enter day: "); scanf ("%d",&day);
+  printf ("Enter hour: "); scanf ("%d", &hour);
+  printf ("Enter minute: "); scanf ("%d", &minute);
+  printf ("Enter second: "); scanf ("%d", &second);
+
+  strcat(time, itoa(year));
+
+  time[0] = year;
+  time[5] = month;
+  time[8] = day;
+  time[11] = hour;
+  time[14] = minute;
+  time[17] = second;
+  time[4] = time[7] = '-';
+  time[13] = time[16] = ':';
+
+  printf("%c", time);
+
+
+
+//time->tm_year = year - 1900;
+//printf("%d", year);
+  /*
+
   char inputTime[19];
 
   printf("Schedule alarm at which date and time hei?");
@@ -45,6 +79,8 @@ void actionS() {
 
 
   printf("Entered time is: %ld", &result);
+
+  */
 
   /*
 
