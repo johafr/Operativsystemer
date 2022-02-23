@@ -10,7 +10,6 @@
 
 //alarm struct som skal brukes i array
 struct alarm {
-  int alarmId;
   int PID; 
   time_t ringTime;
 };
@@ -25,21 +24,47 @@ void actionS() {
   time(&currentTime);
   
   struct tm *alarm = localtime(&currentTime);
-  for (int i = 0; i < 1; i++) {
+  for (int i = 0; i < 6; i++) {
     int input;
     printf("enter values, (year, month, day, hour, minute, second): ");
     scanf("%i", &input);
     if (i == 0 && input >= alarm->tm_year) {
       alarm->tm_year = input - 1900;
     }
-    printf("%i\n", alarm->tm_year);
+    if (i == 1) {
+      alarm->tm_mon = input - 1;
+    }
+    if (i == 2) {
+      alarm->tm_mday = input;
+    }
+    if (i == 3 && input <= 24) {
+      alarm->tm_hour = input;
+    }
+    if (i == 4 && input <= 60) {
+      alarm->tm_min = input;
+    }
+    if (i == 5 && input <= 60) {
+      alarm->tm_sec = input;
+    }
   }
   time_t alarmTime = mktime(alarm);
-  printf("%s\n", ctime(&alarmTime));
+  printf("Scheduling alarm for: %s\n", ctime(&alarmTime));
+  time_t result = alarmTime - currentTime;
+  for (int i = 0; i < 10; i++) {
+    if (alarms[i].PID == 0) {
+      alarms[i].ringTime = result;
+      alarms[i].PID = i;
+      break;
+    }
+  }
+  printf("%ld", result);
 }
 
-void actionL() {
-
+void actionL() {  // Skal komme med en liste over alle alarmer 
+  printf("Your alarms are set at: \n");
+  for (int i = 0; i<10; i++){
+    printf("%ld \n", alarms[i].ringTime);
+  }
 }
 
 void actionC() {
