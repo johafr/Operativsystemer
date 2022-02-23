@@ -4,12 +4,12 @@
 #include<time.h>
 #include <unistd.h>
 
+
 //variables
 
 
 //alarm struct som skal brukes i array
 struct alarm {
-  int alarmId;
   int PID; 
   time_t ringTime;
 };
@@ -20,123 +20,51 @@ struct alarm alarms[10];
 
 //methods
 void actionS() {
-
-  int year;
-  int month;
-  int day;
-  int hour;
-  int minute;
-  int second;
-  char time[0];
-
-  printf ("Enter year: "); scanf ("%d",&year);
-  printf ("Enter month: "); scanf ("%d",&month);
-  printf ("Enter day: "); scanf ("%d",&day);
-  printf ("Enter hour: "); scanf ("%d", &hour);
-  printf ("Enter minute: "); scanf ("%d", &minute);
-  printf ("Enter second: "); scanf ("%d", &second);
-
-  strcat(time, itoa(year));
-
-  time[0] = year;
-  time[5] = month;
-  time[8] = day;
-  time[11] = hour;
-  time[14] = minute;
-  time[17] = second;
-  time[4] = time[7] = '-';
-  time[13] = time[16] = ':';
-
-  printf("%c", time);
-
-
-
-//time->tm_year = year - 1900;
-//printf("%d", year);
-  /*
-
-  char inputTime[19];
-
-  printf("Schedule alarm at which date and time hei?");
-
-  scanf(" %c", &inputTime);
-
-  inputTime[4] = inputTime[7] = '\0';
-  inputTime[13] = inputTime[16] = '\0';
-  struct tm tmdate = {0};
-  tmdate.tm_year = atoi(&inputTime[0]) - 1900;
-  tmdate.tm_mon = atoi(&inputTime[5]) - 1;
-  tmdate.tm_mday = atoi(&inputTime[8]);
-  tmdate.tm_hour = atoi(&inputTime[11]);
-  tmdate.tm_min = atoi(&inputTime[14]);
-  tmdate.tm_sec = atoi(&inputTime[17]);
-  time_t t = mktime( &tmdate );
-
-  time_t seconds;
-  seconds=time (NULL);
-
-  long result=t-seconds;
-
-
-  printf("Entered time is: %ld", &result);
-
-  */
-
-  /*
-
-  struct tm rawTimeInput;
-  time_t timeInput;
-  time_t result;
-
-  time_t seconds;
-  seconds=time (NULL);
-
+  time_t currentTime;
+  time(&currentTime);
   
-
-  int day=rawTimeInput.tm_mday;
-  int mon=rawTimeInput.tm_mon;
-  int year=rawTimeInput.tm_year;
-  int sec=rawTimeInput.tm_sec;
-  int min=rawTimeInput.tm_min;
-  int hour=rawTimeInput.tm_hour;
-
-
-  printf("Schedule alarm at which date and time hei?");
-
-  scanf("%d-%d-%d %d:%d:%d", &rawTimeInput.tm_mday, &rawTimeInput.tm_mon, &rawTimeInput.tm_year, &rawTimeInput.tm_hour, &rawTimeInput.tm_min, &rawTimeInput.tm_sec);
-
-
-  timeInput=mktime(&rawTimeInput);
-  result=timeInput-seconds;
-
-
-  printf("Entered time is: %ld", &result);
-
-  */
-  
-
- /*
-  char input[19];
-  struct tm time_struct;
-
-  printf("Schedule alarm at which date and time? ");
-  scanf("%19[^\n]", input);
-  strptime(input, "%Y-%m-%d %H:%M:%S", &time_struct);
-
-  time_struct.tm_gmtoff=0;
-  time_struct.tm_isdst=0;
-
-  time_t tid = mktime(&time_struct);
-  long seconds_left = tid - time(NULL);
-
-
-  printf("%ld",seconds_left);
-  */
-
+  struct tm *alarm = localtime(&currentTime);
+  for (int i = 0; i < 6; i++) {
+    int input;
+    printf("enter values, (year, month, day, hour, minute, second): ");
+    scanf("%i", &input);
+    if (i == 0 && input >= alarm->tm_year) {
+      alarm->tm_year = input - 1900;
+    }
+    if (i == 1) {
+      alarm->tm_mon = input - 1;
+    }
+    if (i == 2) {
+      alarm->tm_mday = input;
+    }
+    if (i == 3 && input <= 24) {
+      alarm->tm_hour = input;
+    }
+    if (i == 4 && input <= 60) {
+      alarm->tm_min = input;
+    }
+    if (i == 5 && input <= 60) {
+      alarm->tm_sec = input;
+    }
+  }
+  time_t alarmTime = mktime(alarm);
+  printf("Scheduling alarm for: %s\n", ctime(&alarmTime));
+  time_t result = alarmTime - currentTime;
+  for (int i = 0; i < 10; i++) {
+    if (alarms[i].PID == 0) {
+      alarms[i].ringTime = result;
+      alarms[i].PID = i;
+      break;
+    }
+  }
+  printf("%ld", result);
 }
 
-void actionL() {
-
+void actionL() {  // Skal komme med en liste over alle alarmer 
+  printf("Your alarms are set at: \n");
+  for (int i = 0; i<10; i++){
+    printf("%ld \n", alarms[i].ringTime);
+  }
 }
 
 void actionC() {
@@ -176,6 +104,7 @@ int main(){
       printf("wrong bitch \n");
        }
      }
+     printf("%s", "next input: ");
    }
   
   
