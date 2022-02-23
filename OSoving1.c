@@ -49,21 +49,23 @@ void actionS() {
   }
   time_t alarmTime = mktime(alarm);
   printf("Scheduling alarm for: %s\n", ctime(&alarmTime));
-  time_t result = alarmTime - currentTime;
   for (int i = 0; i < 10; i++) {
     if (alarms[i].PID == 0) {
-      alarms[i].ringTime = result;
+      alarms[i].ringTime = alarmTime;
       alarms[i].PID = i;
       break;
     }
   }
-  printf("%ld", result);
+  printf("%ld", alarmTime - currentTime);
 }
 
-void actionL() {  // Skal komme med en liste over alle alarmer 
+void actionL() {                                              // Skal komme med en liste over alle alarmer 
+  time_t currentTime;                                         // lager en variabel med currentTime               
+  time(&currentTime);                                         // Setter tiden akkurat nå
   printf("Your alarms are set at: \n");
   for (int i = 0; i<10; i++){
-    printf("%ld \n", alarms[i].ringTime);
+    time_t test2 = alarms[i].ringTime;
+    printf("%s \n", ctime(&test2));
   }
 }
 
