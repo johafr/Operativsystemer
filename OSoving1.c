@@ -18,6 +18,7 @@ struct alarm alarms[10];
 
 
 //methods
+void cancelAlarm(int index);
 
 void actionS() {
   time_t currentTime;
@@ -38,14 +39,14 @@ void actionS() {
   alarm.tm_mon = month - 1;
   alarm.tm_mday = day;
 
-  char time[250];
+  char timeOfDay[250];
   int hour;
   int minute;
   int second;
   
   printf("enter scheduled time (hh:mm:ss): ");
-  scanf("%s", time);
-  sscanf(time, "%2d:%2d:%2d", &hour, &minute, &second);
+  scanf("%s", timeOfDay);
+  sscanf(timeOfDay, "%2d:%2d:%2d", &hour, &minute, &second);
 
   alarm.tm_hour = hour;
   alarm.tm_min = minute;
@@ -62,22 +63,30 @@ void actionS() {
   time_t alarmTime = mktime(&alarm);
   if (alarmTime - currentTime > 0) {
     printf("Scheduling alarm for: %s\n", ctime(&alarmTime));
+        int index = 0;
         for (int i = 0; i < 10; i++) {
           if (alarms[i].PID == 0) {
             alarms[i].ringTime = alarmTime;
             alarms[i].PID = i + 1;
+            index = i + 1;
             break;
           }
         }
+        //updates time
+        time(&currentTime);
         time_t secondsLeft = alarmTime - currentTime;
         printf("Scheduling alarm in %ld seconds\n", secondsLeft);
         pid_t forkId = fork();
         //fork child
         if (forkId == 0) {
+          printf("child fork\n");
           sleep(secondsLeft);
           printf("Ring!\n");
-        } 
-        //countdown(forkId);
+          cancelAlarm(index);
+          exit(EXIT_SUCCESS);
+        } else {
+         //parent fork.
+        }
   } else {
     printf("Invalid input, try again. \n");
   } 
@@ -98,6 +107,14 @@ void actionL() {                                              // Skal komme med 
 }
 
 
+void cancelAlarm(int index) {
+  for (int i = 0; i < 10; i++) {
+    if (alarms[i].PID == index) {
+      alarms[i].PID = 0;
+      alarms[i].ringTime = time(NULL);
+    }
+  }
+}
 
 void actionC() {
   int index;
@@ -118,11 +135,7 @@ void actionC() {
   }
 }
 
-// void countdown(int forkId) {
-//   if (forkId == 0) {
-    
-//   }
-// }
+
 
 void menu() {
   time_t rawTime;
@@ -162,6 +175,6 @@ void menu() {
 //main
 int main(){
   menu();
-  printf("Compiled");
+  printf("Compiled\n");
   return 0;
 }
