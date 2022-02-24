@@ -2,8 +2,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<time.h>
-#include <unistd.h>
-
+#include<unistd.h>
 
 //variables
 
@@ -19,6 +18,7 @@ struct alarm alarms[10];
 
 
 //methods
+
 void actionS() {
   time_t currentTime;
   time(&currentTime);
@@ -29,8 +29,9 @@ void actionS() {
   int year;
   int month;
   int day;
+
   printf("enter scheduled date (YYYY-MM-DD): ");
-  scanf("%s", &date);
+  scanf("%s", date);
   sscanf(date, "%4d-%2d-%2d", &year, &month, &day);
 
   alarm->tm_year = year - 1900;
@@ -43,13 +44,14 @@ void actionS() {
   int second;
   
   printf("enter scheduled time (hh:mm:ss): ");
-  scanf("%s", &time);
+  scanf("%s", time);
   sscanf(time, "%2d:%2d:%2d", &hour, &minute, &second);
 
   alarm->tm_hour = hour;
   alarm->tm_min = minute;
   alarm->tm_sec = second;
 
+  //fjern før innlevering
   printf("the year is: %4d\n", alarm->tm_year + 1900);
   printf("the month is: %2d\n", alarm->tm_mon + 1);
   printf("the day is: %2d\n", alarm->tm_mday);
@@ -67,11 +69,21 @@ void actionS() {
             break;
           }
         }
-        printf("Scheduling alarm in %ld seconds\n", alarmTime - currentTime);
+        time_t secondsLeft = alarmTime - currentTime;
+        printf("Scheduling alarm in %ld seconds\n", secondsLeft);
+        pid_t forkId = fork();
+        //fork child
+        if (forkId == 0) {
+          sleep(secondsLeft);
+          printf("Ring!\n");
+        } 
+        //countdown(forkId);
   } else {
     printf("Invalid input, try again. \n");
-  }
+  } 
 }
+
+
 
 void actionL() {                                              // Skal komme med en liste over alle alarmer 
   time_t currentTime;                                         // lager en variabel med currentTime               
@@ -84,6 +96,8 @@ void actionL() {                                              // Skal komme med 
     } 
   }
 }
+
+
 
 void actionC() {
   int index;
@@ -104,9 +118,11 @@ void actionC() {
   }
 }
 
-void actionX() {
-  
-}
+// void countdown(int forkId) {
+//   if (forkId == 0) {
+    
+//   }
+// }
 
 void menu() {
   time_t rawTime;
@@ -114,7 +130,8 @@ void menu() {
   time (&rawTime);
   timeinfo = localtime (&rawTime);
   
-  char action; 
+  
+  char action;
   printf("Welcome to the alarm clock! It is currently %s . Please enter 's' (schedule), 'l' (list), 'c' (cancel), 'x' (exit) \n", asctime (timeinfo));
  
   while (action != 'x') {
@@ -134,7 +151,7 @@ void menu() {
       printf("%s", "next input: ");
     } else {
       if (action != 'x') {
-      printf("wrong bitch \n");
+      printf("wrong input \n");
        }
      }
      
