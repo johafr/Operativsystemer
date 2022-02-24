@@ -3,6 +3,7 @@
 #include<stdlib.h>
 #include<time.h>
 #include<unistd.h>
+#include<signal.h>
 
 //variables
 
@@ -53,12 +54,12 @@ void actionS() {
   alarm.tm_sec = second;
 
   //fjern før innlevering
-  printf("the year is: %4d\n", alarm.tm_year + 1900);
-  printf("the month is: %2d\n", alarm.tm_mon + 1);
-  printf("the day is: %2d\n", alarm.tm_mday);
-  printf("the hour is: %2d\n", alarm.tm_hour);
-  printf("the second is: %2d\n", alarm.tm_min);
-  printf("the second is: %2d\n", alarm.tm_sec);
+  // printf("the year is: %4d\n", alarm.tm_year + 1900);
+  // printf("the month is: %2d\n", alarm.tm_mon + 1);
+  // printf("the day is: %2d\n", alarm.tm_mday);
+  // printf("the hour is: %2d\n", alarm.tm_hour);
+  // printf("the second is: %2d\n", alarm.tm_min);
+  // printf("the second is: %2d\n", alarm.tm_sec);
 
   time_t alarmTime = mktime(&alarm);
   if (alarmTime - currentTime > 0) {
@@ -76,16 +77,18 @@ void actionS() {
         time(&currentTime);
         time_t secondsLeft = alarmTime - currentTime;
         printf("Scheduling alarm in %ld seconds\n", secondsLeft);
+        
+        //parent fork comes first
         pid_t forkId = fork();
         //fork child
         if (forkId == 0) {
-          printf("child fork\n");
           sleep(secondsLeft);
           printf("Ring!\n");
           cancelAlarm(index);
+          printf("next input: ");
           exit(EXIT_SUCCESS);
         } else {
-         //parent fork.
+         printf("parent fork.\n");
         }
   } else {
     printf("Invalid input, try again. \n");
@@ -97,12 +100,17 @@ void actionS() {
 void actionL() {                                              // Skal komme med en liste over alle alarmer 
   time_t currentTime;                                         // lager en variabel med currentTime               
   time(&currentTime);                                         // Setter tiden akkurat nå
-  printf("Your alarms are set at: \n");
+  printf("Your alarms: \n");
+  int num = 0;
   for (int i = 0; i<10; i++){
     time_t alarmTime = alarms[i].ringTime;
-    if (alarms[i].PID != 0) {
+    if (alarms[i].ringTime - currentTime > 0) {
       printf("%i %s \n",alarms[i].PID ,ctime(&alarmTime));
+      num++;
     } 
+  }
+  if (num == 0) {
+    printf("You currently don't have any alarms set: \n");
   }
 }
 
