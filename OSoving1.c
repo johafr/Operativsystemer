@@ -9,7 +9,8 @@
 
 //alarm struct som skal brukes i array
 struct alarm {
-  int PID; 
+  int alarmId;
+  pid_t PID; 
   time_t ringTime;
 };
 
@@ -52,23 +53,17 @@ void actionS() {
   alarm.tm_min = minute;
   alarm.tm_sec = second;
 
-  //fjern før innlevering
-  // printf("the year is: %4d\n", alarm.tm_year + 1900);
-  // printf("the month is: %2d\n", alarm.tm_mon + 1);
-  // printf("the day is: %2d\n", alarm.tm_mday);
-  // printf("the hour is: %2d\n", alarm.tm_hour);
-  // printf("the second is: %2d\n", alarm.tm_min);
-  // printf("the second is: %2d\n", alarm.tm_sec);
-
   time_t alarmTime = mktime(&alarm);
   if (alarmTime - currentTime > 0) {
+    struct alarm currentAlarm;
     printf("Scheduling alarm for: %s\n", ctime(&alarmTime));
         int index = 0;
         for (int i = 0; i < 10; i++) {
-          if (alarms[i].PID == 0) {
+          if (alarms[i].alarmId == 0) {
             alarms[i].ringTime = alarmTime;
-            alarms[i].PID = i + 1;
+            alarms[i].alarmId = i + 1;
             index = i + 1;
+            currentAlarm = alarms[i];
             break;
           }
         }
@@ -78,9 +73,9 @@ void actionS() {
         printf("Scheduling alarm in %ld seconds\n", secondsLeft);
         
         //parent fork comes first
-        pid_t forkId = fork();
+        currentAlarm.PID = fork();
         //fork child
-        if (forkId == 0) {
+        if (currentAlarm.PID == 0) {
           sleep(secondsLeft);
           printf("Ring!\n");
           cancelAlarm(index);
@@ -105,7 +100,7 @@ void actionL() {                                              // Skal komme med 
   for (int i = 0; i<10; i++){
     time_t alarmTime = alarms[i].ringTime;
     if (alarms[i].ringTime - currentTime > 0) {
-      printf("%i %s \n",alarms[i].PID ,ctime(&alarmTime));
+      printf("%i %s \n",alarms[i].alarmId ,ctime(&alarmTime));
       num++;
     } 
   }
@@ -117,9 +112,11 @@ void actionL() {                                              // Skal komme med 
 
 void cancelAlarm(int index) {
   for (int i = 0; i < 10; i++) {
-    if (alarms[i].PID == index) {
-      alarms[i].PID = 0;
+    if (alarms[i].alarmId == index) {
+      alarms[i].alarmId = 0;
       alarms[i].ringTime = time(NULL);
+      //trenger å terminere child prossessen.
+      //kill(alarms[i].PID, SIGKILL);
     }
   }
 }
@@ -130,8 +127,8 @@ void actionC() {
   scanf("%i", &index);
   int deleted = 0;
   for (int i = 0; i < 10; i++) {
-    if (alarms[i].PID == index) {
-      alarms[i].PID = 0;
+    if (alarms[i].alarmId == index) {
+      alarms[i].alarmId = 0;
       alarms[i].ringTime = time(NULL);
       deleted = 1;
     }
