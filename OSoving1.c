@@ -108,10 +108,7 @@ void actionX() {
   
 }
 
-
-//main
-int main(){
-
+void menu() {
   time_t rawTime;
   struct tm *timeinfo;
   time (&rawTime);
@@ -126,21 +123,28 @@ int main(){
     if (action == 's') {
       printf("your input = %c \nyou can schedule an alarm \n", action);
       actionS();
+      printf("%s", "next input: ");
     } else if (action == 'l') {
       printf("your input = %c \nyou can display alarms \n" , action);
       actionL();
+      printf("%s", "next input: ");
     } else if (action == 'c') {
       printf("your input = %c \nyou can cancel alarms \n" , action);
       actionC();
+      printf("%s", "next input: ");
     } else {
       if (action != 'x') {
       printf("wrong bitch \n");
        }
      }
-     printf("%s", "next input: ");
+     
    }
-  
-  
+}
+
+
+//main
+int main(){
+  menu();
   printf("Compiled");
   return 0;
 }
