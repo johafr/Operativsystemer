@@ -23,7 +23,7 @@ void actionS() {
   time_t currentTime;
   time(&currentTime);
   
-  struct tm *alarm;
+  struct tm alarm;
   
   char date[250];
   int year;
@@ -34,9 +34,9 @@ void actionS() {
   scanf("%s", date);
   sscanf(date, "%4d-%2d-%2d", &year, &month, &day);
 
-  alarm->tm_year = year - 1900;
-  alarm->tm_mon = month - 1;
-  alarm->tm_mday = day;
+  alarm.tm_year = year - 1900;
+  alarm.tm_mon = month - 1;
+  alarm.tm_mday = day;
 
   char time[250];
   int hour;
@@ -47,19 +47,19 @@ void actionS() {
   scanf("%s", time);
   sscanf(time, "%2d:%2d:%2d", &hour, &minute, &second);
 
-  alarm->tm_hour = hour;
-  alarm->tm_min = minute;
-  alarm->tm_sec = second;
+  alarm.tm_hour = hour;
+  alarm.tm_min = minute;
+  alarm.tm_sec = second;
 
   //fjern før innlevering
-  printf("the year is: %4d\n", alarm->tm_year + 1900);
-  printf("the month is: %2d\n", alarm->tm_mon + 1);
-  printf("the day is: %2d\n", alarm->tm_mday);
-  printf("the hour is: %2d\n", alarm->tm_hour);
-  printf("the second is: %2d\n", alarm->tm_min);
-  printf("the second is: %2d\n", alarm->tm_sec);
+  printf("the year is: %4d\n", alarm.tm_year + 1900);
+  printf("the month is: %2d\n", alarm.tm_mon + 1);
+  printf("the day is: %2d\n", alarm.tm_mday);
+  printf("the hour is: %2d\n", alarm.tm_hour);
+  printf("the second is: %2d\n", alarm.tm_min);
+  printf("the second is: %2d\n", alarm.tm_sec);
 
-  time_t alarmTime = mktime(alarm);
+  time_t alarmTime = mktime(&alarm);
   if (alarmTime - currentTime > 0) {
     printf("Scheduling alarm for: %s\n", ctime(&alarmTime));
         for (int i = 0; i < 10; i++) {
