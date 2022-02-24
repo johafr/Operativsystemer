@@ -7,7 +7,6 @@
 
 //variables
 
-
 //alarm struct som skal brukes i array
 struct alarm {
   int PID; 
@@ -86,6 +85,7 @@ void actionS() {
           printf("Ring!\n");
           cancelAlarm(index);
           printf("next input: ");
+          //kan evt implementere kill men fikk det ikke til
           exit(EXIT_SUCCESS);
         } else {
          printf("parent fork.\n");
