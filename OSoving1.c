@@ -15,7 +15,6 @@ struct alarm {
 
 //alarm ringing
 void ringAlarm() {
-  
   printf("RING! \n");
 #ifdef __APPLE__
   execlp("afplay", "afplay", "./nuke.mp3", NULL);
@@ -26,9 +25,8 @@ void ringAlarm() {
 #endif
 }
 
-//har en array som har plass til 10 structs (alarm)
+//alarms
 struct alarm alarms[10];
-
 
 //methods
 void cancelAlarm(int index);
@@ -143,7 +141,6 @@ void cancelAlarm(int index) {
     if (alarms[i].alarmId == index) {
       alarms[i].alarmId = 0;
       alarms[i].ringTime = time(NULL);
-      //trenger å slette alarmen i parent forken
     }
   }
 }
@@ -200,8 +197,7 @@ void menu() {
   printf("Welcome to the alarm clock! It is currently %s . Please enter 's' (schedule), 'l' (list), 'c' (cancel), 'x' (exit) \n", asctime (timeinfo));
  
   while (action != 'x') {
-    //makes sure there are no zombies before new input.
-    catchZombies();
+    catchZombies(); //makes sure there are no zombies before new input.
     scanf(" %c", &action); 
     if (action == 's') {
       printf("your input = %c \nyou can schedule an alarm \n", action);
