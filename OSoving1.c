@@ -5,6 +5,8 @@
 #include<unistd.h>
 #include<signal.h>
 
+//defines
+
 //variables
 
 //alarm struct som skal brukes i array
@@ -72,18 +74,19 @@ void actionS() {
         time_t secondsLeft = alarmTime - currentTime;
         printf("Scheduling alarm in %ld seconds\n", secondsLeft);
         
-        //parent fork comes first
-        currentAlarm.PID = fork();
+        int forked = fork();
         //fork child
-        if (currentAlarm.PID == 0) {
+        if (forked == 0) {
+          currentAlarm.PID = forked;
+          printf("Child PID: %i\n", currentAlarm.PID);
           sleep(secondsLeft);
           printf("Ring!\n");
           cancelAlarm(index);
           printf("next input: ");
-          //kan evt implementere kill men fikk det ikke til
           exit(EXIT_SUCCESS);
         } else {
-         printf("parent fork.\n");
+          currentAlarm.PID = forked;
+          printf("parent PID: %i\n", currentAlarm.PID);
         }
   } else {
     printf("Invalid input, try again. \n");
@@ -115,22 +118,25 @@ void cancelAlarm(int index) {
     if (alarms[i].alarmId == index) {
       alarms[i].alarmId = 0;
       alarms[i].ringTime = time(NULL);
-      //trenger å terminere child prossessen.
-      //kill(alarms[i].PID, SIGKILL);
     }
   }
 }
 
 void actionC() {
   int index;
+  printf("PID of first alarm: %i\n", alarms[0].PID);
   printf("enter the number of the alarm you wish to cancel: \n");
   scanf("%i", &index);
   int deleted = 0;
   for (int i = 0; i < 10; i++) {
+    printf("PID alarm: %i + i = %i \n", alarms[i].PID, i);
     if (alarms[i].alarmId == index) {
+      printf("PID of process = %i\n",alarms[i].PID);
+      int test = kill(/*PID of child process alarm*/ alarms[i].PID, 0);
       alarms[i].alarmId = 0;
       alarms[i].ringTime = time(NULL);
       deleted = 1;
+      printf("kill input = %i\n", test);
     }
   }
   if (deleted == 0) {
