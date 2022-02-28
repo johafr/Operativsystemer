@@ -73,7 +73,6 @@ void actionS() {
             //fork child
             if (forked == 0) {
               alarms[i].PID = forked;
-              printf("Child PID: %i\n", alarms[i].PID);
               sleep(secondsLeft);
               printf("Ring!\n");
               cancelAlarm(index);
@@ -81,7 +80,6 @@ void actionS() {
               exit(EXIT_SUCCESS);
             } else {
               alarms[i].PID = forked;
-              printf("parent PID: %i\n", alarms[i].PID);
             }
 
             break;
@@ -130,14 +128,11 @@ void actionC() {
   scanf("%i", &index);
   int deleted = 0;
   for (int i = 0; i < 10; i++) {
-    printf("PID alarm: %i + i = %i \n", alarms[i].PID, i);
     if (alarms[i].alarmId == index) {
-      printf("PID of process = %i\n",alarms[i].PID);
-      int test = kill(/*PID of child process alarm*/ alarms[i].PID, 9);
       alarms[i].alarmId = 0;
       alarms[i].ringTime = time(NULL);
-      deleted = 1;
-      printf("kill input = %i\n", test);
+      deleted = 1; 
+      int test = kill(alarms[i].PID, 9);
     }
   }
   if (deleted == 0) {
@@ -184,7 +179,7 @@ void menu() {
 }
 
 
-//main
+
 int main(){
   menu();
   printf("Compiled\n");
