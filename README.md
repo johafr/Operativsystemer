@@ -3,7 +3,8 @@ Vi oppdaget et problem med scanf når vi hadde et whitespace som input. Dette va
 I tillegg valgte vi å gå for time_t sin egen formatering av tid siden vi synes den er mer oversiktlig enn den som er presentert i oppgaven.
 
 //TODO:
-- fikse cancel alarm så den sletter alarm på parent
+- fikse cancel alarm så den sletter alarm på parent.
+- input i actionS() blir igjen fra forrige input.
 
 Tester:
 Kjør programmet ved å skrive inn "gcc OSoving1.c" i terminalen. Trykk deretter "enter" og skriv inn "./a.out" og trykk "enter".
@@ -34,4 +35,11 @@ Det blir og testet om exit() funksjonen til fork termineres.
 - Skriv deretter inn et tidspunkt fra fortiden. Programmet skal da skrive ut "invalid input, try again" til terminalen og sende brukeren tilbake til startmenyen. 
 - Deretter skriver man inn et gyldig tidspunkt i nær fremtid og venter til tidspunktet inntreffer. Programmet skal da skrive ut "ring!" til terminalen eller komme med en ringetone (avhengig av operativsystemet til maskinen).
 
-4. 
+- Testen sjekker om det er implementert logikk for å ikke opprette en alarm i fortiden, samt om programmet vil kræsje som en konsekvens av dette. I tillegg sjekker den om en gyldig alarm gir riktig output når den settes av. Dette er nødvendig siden brukerfeil fort kan oppstå ved et så strengt format som inputverdiene til oppgaven.
+
+4. Test over at alt fungerer sammen.
+- Utfør test 1, 2 og 3 samlet uten å terminere økten.
+
+- Test 4 introduserer ikke noen nye konsepter inn i bildet, men er likevel nødvendig for å sjekke varigheten til programmet. Med kompleks kode kan det hende programmet kjører i spesifikk rekkefølge, men bryter sammen ved gjentagende kjøringer på grunn av bugs eller lignende
+
+- Testen skal gi samme output som tidligere, men med sammenspleisede resultater.
