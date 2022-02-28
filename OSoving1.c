@@ -5,9 +5,6 @@
 #include<unistd.h>
 #include<signal.h>
 #include<sys/wait.h>
-//defines
-
-//variables
 
 //alarm struct som skal brukes i array
 struct alarm {
@@ -22,6 +19,19 @@ struct alarm alarms[10];
 
 //methods
 void cancelAlarm(int index);
+
+int getNumAlarms() {
+  time_t currentTime;                                                       
+  time(&currentTime);                                         
+  int num = 0;
+  for (int i = 0; i<10; i++){
+    time_t alarmTime = alarms[i].ringTime;
+    if (alarms[i].ringTime - currentTime > 0) {
+      num++;
+    } 
+  }
+  return num;
+}
 
 void actionS() {
   time_t currentTime;
@@ -58,8 +68,7 @@ void actionS() {
   time_t alarmTime = mktime(&alarm);
   if (alarmTime - currentTime > 0) {
     printf("Scheduling alarm for: %s\n", ctime(&alarmTime));
-    //updates time
-    time(&currentTime);
+    time(&currentTime); //updates the time
     time_t secondsLeft = alarmTime - currentTime;
     printf("Scheduling alarm in %ld seconds\n", secondsLeft);
         int index = 0;
@@ -70,8 +79,7 @@ void actionS() {
             index = i + 1;
 
             int forked = fork();
-            //fork child
-            if (forked == 0) {
+            if (forked == 0) {  //fork child
               alarms[i].PID = forked;
               sleep(secondsLeft);
               printf("Ring!\n");
@@ -88,15 +96,19 @@ void actionS() {
         
         
   } else {
-    printf("Invalid input, try again. \n");
+    if (getNumAlarms() == 10) {
+      printf("Too many alarms, remove one to add another");
+    } else {
+      printf("Invalid input, try again. \n");
+    }
   } 
 }
 
 
 
-void actionL() {                                              // Skal komme med en liste over alle alarmer 
-  time_t currentTime;                                         // lager en variabel med currentTime               
-  time(&currentTime);                                         // Setter tiden akkurat nå
+void actionL() {                                              
+  time_t currentTime;                                                       
+  time(&currentTime);                                         
   printf("Your alarms: \n\n");
   int num = 0;
   for (int i = 0; i<10; i++){
@@ -117,6 +129,7 @@ void cancelAlarm(int index) {
     if (alarms[i].alarmId == index) {
       alarms[i].alarmId = 0;
       alarms[i].ringTime = time(NULL);
+      //trenger å slette alarmen i parent forken
     }
   }
 }
@@ -126,25 +139,40 @@ void actionC() {
   printf("PID of first alarm: %i\n", alarms[0].PID);
   printf("enter the number of the alarm you wish to cancel: \n");
   scanf("%i", &index);
-  int deleted = 0;
+  int deleted = -1;
   for (int i = 0; i < 10; i++) {
     if (alarms[i].alarmId == index) {
       alarms[i].alarmId = 0;
       alarms[i].ringTime = time(NULL);
       deleted = 1; 
-      int test = kill(alarms[i].PID, 9);
+      kill(alarms[i].PID, SIGKILL);
     }
   }
-  if (deleted == 0) {
+  if (deleted == -1) {
     printf("Alarm does not exist. \n");
   } else {
-    printf("Alarm %i is deleted. ", index);
+    printf("Alarm %i is deleted. \n", index);
   }
 }
 
 void catchZombies() {
   pid_t PID = waitpid(-1, NULL, WNOHANG);
-  
+  if (PID == 0) {
+    return;
+  }
+  int index = -1;
+  for (int i = 0; i < getNumAlarms(); i++) {
+    if (alarms[i].PID == PID) {
+      index = i;
+      break;
+    }
+  }  
+  if (index==-1) {
+    return;
+  }
+  alarms[index].alarmId = 0;
+  alarms[index].ringTime = time(NULL);
+  kill(alarms[index].PID, SIGKILL);
 }
 
 void menu() {
@@ -158,8 +186,9 @@ void menu() {
   printf("Welcome to the alarm clock! It is currently %s . Please enter 's' (schedule), 'l' (list), 'c' (cancel), 'x' (exit) \n", asctime (timeinfo));
  
   while (action != 'x') {
-    scanf(" %c", &action); 
+    //makes sure there are no zombies before new input.
     catchZombies();
+    scanf(" %c", &action); 
     if (action == 's') {
       printf("your input = %c \nyou can schedule an alarm \n", action);
       actionS();
@@ -177,11 +206,8 @@ void menu() {
       printf("wrong input \n");
        }
      }
-     
    }
 }
-
-
 
 int main(){
   menu();
