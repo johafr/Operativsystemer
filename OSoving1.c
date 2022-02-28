@@ -13,6 +13,19 @@ struct alarm {
   time_t ringTime;
 } newAlarm;
 
+//alarm ringing
+void ringAlarm() {
+  
+  printf("RING! \n");
+#ifdef __APPLE__
+  execlp("afplay", "afplay", "./nuke.mp3", NULL);
+#elif __unix__
+  execlp("mpg123", "mpg123", "-q", "./nuke.mp3", NULL);
+#elif _WIN32
+  printf("RING! \n");
+#endif
+}
+
 //har en array som har plass til 10 structs (alarm)
 struct alarm alarms[10];
 
@@ -65,6 +78,7 @@ void actionS() {
   alarm.tm_min = minute;
   alarm.tm_sec = second;
 
+  time(&currentTime);
   time_t alarmTime = mktime(&alarm);
   if (alarmTime - currentTime > 0) {
     printf("Scheduling alarm for: %s\n", ctime(&alarmTime));
@@ -82,7 +96,7 @@ void actionS() {
             if (forked == 0) {  //fork child
               alarms[i].PID = forked;
               sleep(secondsLeft);
-              printf("Ring!\n");
+              ringAlarm();
               cancelAlarm(index);
               printf("next input: ");
               exit(EXIT_SUCCESS);
