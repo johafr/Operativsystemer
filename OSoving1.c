@@ -14,7 +14,7 @@ struct alarm {
   int alarmId;
   pid_t PID; 
   time_t ringTime;
-};
+} newAlarm;
 
 //har en array som har plass til 10 structs (alarm)
 struct alarm alarms[10];
@@ -57,37 +57,38 @@ void actionS() {
 
   time_t alarmTime = mktime(&alarm);
   if (alarmTime - currentTime > 0) {
-    struct alarm currentAlarm;
     printf("Scheduling alarm for: %s\n", ctime(&alarmTime));
+    //updates time
+    time(&currentTime);
+    time_t secondsLeft = alarmTime - currentTime;
+    printf("Scheduling alarm in %ld seconds\n", secondsLeft);
         int index = 0;
         for (int i = 0; i < 10; i++) {
           if (alarms[i].alarmId == 0) {
             alarms[i].ringTime = alarmTime;
             alarms[i].alarmId = i + 1;
             index = i + 1;
-            currentAlarm = alarms[i];
+
+            int forked = fork();
+            //fork child
+            if (forked == 0) {
+              alarms[i].PID = forked;
+              printf("Child PID: %i\n", alarms[i].PID);
+              sleep(secondsLeft);
+              printf("Ring!\n");
+              cancelAlarm(index);
+              printf("next input: ");
+              exit(EXIT_SUCCESS);
+            } else {
+              alarms[i].PID = forked;
+              printf("parent PID: %i\n", alarms[i].PID);
+            }
+
             break;
           }
         }
-        //updates time
-        time(&currentTime);
-        time_t secondsLeft = alarmTime - currentTime;
-        printf("Scheduling alarm in %ld seconds\n", secondsLeft);
         
-        int forked = fork();
-        //fork child
-        if (forked == 0) {
-          currentAlarm.PID = forked;
-          printf("Child PID: %i\n", currentAlarm.PID);
-          sleep(secondsLeft);
-          printf("Ring!\n");
-          cancelAlarm(index);
-          printf("next input: ");
-          exit(EXIT_SUCCESS);
-        } else {
-          currentAlarm.PID = forked;
-          printf("parent PID: %i\n", currentAlarm.PID);
-        }
+        
   } else {
     printf("Invalid input, try again. \n");
   } 
@@ -132,7 +133,7 @@ void actionC() {
     printf("PID alarm: %i + i = %i \n", alarms[i].PID, i);
     if (alarms[i].alarmId == index) {
       printf("PID of process = %i\n",alarms[i].PID);
-      int test = kill(/*PID of child process alarm*/ alarms[i].PID, 0);
+      int test = kill(/*PID of child process alarm*/ alarms[i].PID, 9);
       alarms[i].alarmId = 0;
       alarms[i].ringTime = time(NULL);
       deleted = 1;
