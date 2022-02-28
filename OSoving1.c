@@ -4,7 +4,6 @@
 #include<time.h>
 #include<unistd.h>
 #include<signal.h>
-
 //defines
 
 //variables
@@ -142,7 +141,9 @@ void actionC() {
   }
 }
 
-
+void catchZombies() {
+  pid_t PID = waitpid(-1, NULL, WNOHANG);
+}
 
 void menu() {
   time_t rawTime;
@@ -156,7 +157,7 @@ void menu() {
  
   while (action != 'x') {
     scanf(" %c", &action); 
-    
+    catchZombies();
     if (action == 's') {
       printf("your input = %c \nyou can schedule an alarm \n", action);
       actionS();
