@@ -4,6 +4,7 @@
 #include<time.h>
 #include<unistd.h>
 #include<signal.h>
+#include<sys/wait.h>
 //defines
 
 //variables
@@ -96,7 +97,7 @@ void actionS() {
 void actionL() {                                              // Skal komme med en liste over alle alarmer 
   time_t currentTime;                                         // lager en variabel med currentTime               
   time(&currentTime);                                         // Setter tiden akkurat nå
-  printf("Your alarms: \n");
+  printf("Your alarms: \n\n");
   int num = 0;
   for (int i = 0; i<10; i++){
     time_t alarmTime = alarms[i].ringTime;
@@ -106,7 +107,7 @@ void actionL() {                                              // Skal komme med 
     } 
   }
   if (num == 0) {
-    printf("You currently don't have any alarms set: \n");
+    printf("You currently don't have any alarms set: \n\n");
   }
 }
 
@@ -143,6 +144,7 @@ void actionC() {
 
 void catchZombies() {
   pid_t PID = waitpid(-1, NULL, WNOHANG);
+  
 }
 
 void menu() {
